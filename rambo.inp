@@ -1,0 +1,55 @@
+# comment
+Rambo et al conditions, coll, 342 MeV
+# beam energy [MeV]
+ 855
+# energy spread [MeV]
+0.0
+# crystal orientation
+#   Theta [rad]
+0.0633
+#   Alpha [rad]
+0.620
+#   Phi   [rad]
+0.785398
+# horizontal beam spot size [mm]:
+0.0001
+# vertical beam spot size [mm]:
+0.0001
+# horizontal beam divergence [mrad]:
+0.0001
+# vertical beam divergence [mrad]:
+0.0001
+# thickness of diamond radiator [mm]:
+0.010 0.00
+# distance target/collimator [m]:
+75.0
+# length of collimator [m]
+0.25
+# radius of collimator [mm]:
+1.7 0.0
+# offset of collimator [mm]:
+0.0 0.0 
+# room temperature [Kelvin]
+295.            debye.dat
+# Z of crystal radiator, diamond: 6
+# Z of amorphous radiator Ni:28, Al 13
+  6 13
+###################### mcb specific ##########################################
+# mcb: process to calculate [amo,inC,inR,sum,dif] : 
+mcb:inC
+# mcb: [KLMAX (Max Lattice index in [HKL] (usually 2..15)
+mcb:  10
+# mcb: simulating N events, (incident electrons given in log)
+mcb:  200000.
+# mcb: Atot (max intensity) , possible 4 values for amo,inc,sum,dif
+mcb:  15. 15.  10. 10.
+###################### anb specific ##########################################
+#
+# incoherent type: BH   (0) Bethe Heitler,
+#                  Ceff (1) Hubbell Ceff Method,
+#                  RDeb (2) Hubbell RDeb Method
+anb: Ceff
+# number of lattice vectors
+anb: 10
+#
+anb: cry calc coh_2D
