@@ -2,6 +2,8 @@
 # Makefile for ROOT-based Applications
 # Environment variable ROOTSYS must be set
 #
+INSTALL_LOCATION = ~/ROOT/slib
+#
 mcb = $(PWD)
 #
 #C = $(mcb)
@@ -40,8 +42,8 @@ HIGZLIB = $(cernlib)/libgrafX11.a
 BUTTONLIB = -L$(XLIB) -L$(XAWLIB) -lXaw3d -lXmu -lXt -lXext -lX11 -lm
 #
 #
-CFLAGS=-c -fPIC -Wall -I$(ROOTSYS)/include/root   # was by Ingolf ????
-CCCFLAGS= -c -fPIC -Wall -I$(ROOTSYS)/include/root 
+CFLAGS=-c -fPIC -Wall -I$(ROOTSYS)/include   # was by Ingolf ????
+CCCFLAGS= -c -fPIC -Wall -std=c++11 -I$(ROOTSYS)/include 
 FORFLAGS = -c 
 #CFLAGS=-c -Wall -I$(ROOTSYS)/include   # was here
 LDFLAGS= -g -Wall -v 
@@ -53,11 +55,18 @@ MCBRH   = $(I)/TUserMCBInp.h $(I)/TUserMCBOut.h $(I)/randoms.h $(I)/vec.h
 
 
 LIBPACK = -L$(cernlib) -lpacklib
-LIBMATH =-L$(cernlib)  -lmathlib
+LIBMATH = -L$(cernlib)  -lmathlib
 
 ROOTGLIBS = $(shell root-config --glibs)
 
-mcbu:	$(B)/mcbu
+all:	$(O)/libTUserMCBIO.so mcbu
+
+install: all
+	@echo "installing to " $(INSTALL_LOCATION) 
+	install -d $(INSTALL_LOCATION) 
+	install -C $(O)/libTUserMCBIO.so $(O)/dictMCBInp_rdict.pcm $(O)/dictMCBOut_rdict.pcm $(INSTALL_LOCATION) 
+
+mcbu:	$(B)/mcbu 
 
 #
 clean:
@@ -122,14 +131,15 @@ $(O)/libTUserMCBIO.so: $(O)/TUserMCBInp.o $(O)/TUserMCBOut.o \
 	@echo "         $@ ..."
 	@echo "  "
 	$(CCCOMP) $(SOFLAGS) -O -o $@ $^
+	cp $(C)/dictMCBOut_rdict.pcm $(C)/dictMCBInp_rdict.pcm  $(O)
 
 $(I)/dictMCBOut.h: $(I)/TUserMCBOut.h
 $(I)/dictMCBInp.h: $(I)/TUserMCBInp.h
 
 $(C)/dictMCBOut.cc: $(I)/TUserMCBOut.h
 	@echo "creating dictionary OUT $* (.h .cc) ..."
-	rootcint -f $@ -c $^
+	rootcint -v -f $@ -c $^
 $(C)/dictMCBInp.cc: $(I)/TUserMCBInp.h
 	@echo "creating dictionary INP $* (.h .cc) ..."
-	rootcint -f $@ -c $^
+	rootcint -v -f $@ -c $^
 
