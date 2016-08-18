@@ -1,0 +1,14 @@
+{
+    ((TSystem*)gSystem)->Load("/home/hovanes/ROOT/slib/libTUserMCBIO.so");
+    ((TSystem*)gSystem)->Load("/home/hovanes/ROOT/slib/WrapperAxesCuts.so");
+    ((TSystem*)gSystem)->Load("/home/hovanes/ROOT/slib/Container.so");
+    ((TSystem*)gSystem)->Load("/home/hovanes/ROOT/slib/WrapperVirt.so");
+    ((TSystem*)gSystem)->Load("/home/hovanes/ROOT/slib/WrapperDim.so");
+    ((TSystem*)gSystem)->Load("/home/hovanes/ROOT/slib/WrapperType.so");
+    ((TSystem*)gSystem)->Load("/home/hovanes/ROOT/slib/WrapperPhysics.so");
+    ((TSystem*)gSystem)->Load("/home/hovanes/ROOT/slib/Wrapper.so");
+    ((TSystem*)gSystem)->Load("/home/hovanes/ROOT/slib/ScanPositionData.so");
+    ((TSystem*)gSystem)->Load("/home/hovanes/ROOT/slib/ScanMCB.so");
+    ((TSystem*)gSystem)->Load("/home/hovanes/ROOT/slib/mcbTreeSelector.so");
+    ((TSystem*)gSystem)->Load("/home/hovanes/ROOT/slib/ScanPositionPlots.so");
+}

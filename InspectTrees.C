@@ -1,3 +1,17 @@
+#include <iostream>
+
+#include "TROOT.h"
+#include "TSystem.h"
+#include "TH2D.h"
+#include "TH2I.h"
+#include "TTree.h"
+#include "TChain.h"
+#include "TF1.h"
+
+#include "src/TUserMCBInp.h"
+#include "src/TUserMCBOut.h"
+
+using namespace std;
 //Declare objects with global scope
 //Files and Trees
 TFile* fdif;
@@ -46,7 +60,7 @@ void OpenFiles(){
   //Load TUserMCBOut library to allow calculation of weights
   // gSystem->Load("libTUserMCBOut.so");
   //gSystem->Load("libTUserMCBInp.so");
-  gSystem->Load("/home/dglazier/PolPhot/CBrem/mcb05/linux/obj/libTUserMCBIO.so");
+  gSystem->Load("/home/hovanes/GlueX/MCB/linux/obj/libTUserMCBIO.so");
   TUserMCBOut* InfoOut_amo;
   TUserMCBOut* InfoOut_inc;
   TUserMCBOut* InfoOut_sum;
@@ -54,28 +68,28 @@ void OpenFiles(){
 
   Double_t renorm=1000;
   //Open files, get trees, get OutInfo, calc. weights
-  fdif=new TFile("/w/work3/mainz/A2/BeamProfiler/MCB/Settings2/vgl027.dif.seed0.root");
+  fdif=new TFile("/home/hovanes/GlueX/MCB/vgl010.dif.root");
   ttdif=(TTree*)fdif->Get("mcb_tree");
   ttdif->SetNameTitle("tdif","tdif");
   TList* treelist=ttdif->GetUserInfo();
   InfoOut_dif=(TUserMCBOut*)treelist->At(1);
   Weight_dif=InfoOut_dif->NormVolume *  renorm/InfoOut_dif->no_Electrons;
   
-  fsum=new TFile("/w/work3/mainz/A2/BeamProfiler/MCB/Settings2/vgl027.sum.seed0.root");
+  fsum=new TFile("/home/hovanes/GlueX/MCB/vgl010.sum.root");
   ttsum=(TTree*)fsum->Get("mcb_tree");
   ttsum->SetNameTitle("tsum","tsum");
   treelist=ttsum->GetUserInfo();
   InfoOut_sum=(TUserMCBOut*)treelist->At(1);
   Weight_sum=InfoOut_sum->NormVolume *  renorm/InfoOut_sum->no_Electrons;
 
-  famo=new TFile("/w/work3/mainz/A2/BeamProfiler/MCB/Settings2/vgl027.amo.seed0.root");
+  famo=new TFile("/home/hovanes/GlueX/MCB/vgl010.amo.root");
   ttamo=(TTree*)famo->Get("mcb_tree");
   ttamo->SetNameTitle("tamo","tamo");
   treelist=ttamo->GetUserInfo();
   InfoOut_amo=(TUserMCBOut*)treelist->At(1);
   Weight_amo=InfoOut_amo->NormVolume *  renorm/InfoOut_amo->no_Electrons;
 
-  finc=new TFile("/w/work3/mainz/A2/BeamProfiler/MCB/Settings2/vgl027.inc.seed0.root");
+  finc=new TFile("/home/hovanes/GlueX/MCB/vgl010.inc.root");
   ttinc=(TTree*)finc->Get("mcb_tree");
   ttinc->SetNameTitle("tinc","tinc");
   treelist=ttinc->GetUserInfo();
@@ -83,7 +97,7 @@ void OpenFiles(){
   Weight_inc=InfoOut_inc->NormVolume *  renorm/InfoOut_inc->no_Electrons;
 
 }
-void ChainFiles(Int_t NFiles,TString seeds[],TString vgl){
+void ChainFiles(Int_t NFiles,TString vgl){
   //Chains together input files
   //Nfile=nu,ber of files
   //seeds=seeds of files to be analysed eg. {"1","2","3"...}
@@ -92,7 +106,7 @@ void ChainFiles(Int_t NFiles,TString seeds[],TString vgl){
   //Load TUserMCBOut library to allow calculation of weights
   //gSystem->Load("libTUserMCBOut.so");
   //gSystem->Load("libTUserMCBInp.so");
-  gSystem->Load("/scratch3/dglazier/mcb05/linux/obj/libTUserMCBIO.so");
+  gSystem->Load("/home/hovanes/GlueX/MCB/linux/obj/libTUserMCBIO.so");
   TUserMCBOut* InfoOut_amo;
   TUserMCBOut* InfoOut_inc;
   TUserMCBOut* InfoOut_sum;
@@ -106,61 +120,68 @@ void ChainFiles(Int_t NFiles,TString seeds[],TString vgl){
   tinc=new TChain("mcb_tree");
     
   for(Int_t i=0;i<NFiles;i++){
-    TString Seed(TString("seed")+seeds[i]);
-//     tdif->Add(TString("/w/work3/mainz/A2/BeamProfiler/MCB/Settings2/")+vgl+TString(".dif.")+Seed+TString(".root"));
-//     tsum->Add(TString("/w/work3/mainz/A2/BeamProfiler/MCB/Settings2/")+vgl+TString(".sum.")+Seed+TString(".root"));
-//     tamo->Add(TString("/w/work3/mainz/A2/BeamProfiler/MCB/Settings2/")+vgl+TString(".amo.")+Seed+TString(".root"));
-//     tinc->Add(TString("/w/work3/mainz/A2/BeamProfiler/MCB/Settings2/")+vgl+TString(".inc.")+Seed+TString(".root"));
+//    TString Seed(TString("seed")+seeds[i]);
+//     tdif->Add(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".dif.")+Seed+TString(".root"));
+//     tsum->Add(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".sum.")+Seed+TString(".root"));
+//     tamo->Add(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".amo.")+Seed+TString(".root"));
+//     tinc->Add(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".inc.")+Seed+TString(".root"));
    //  TFile* ftest;
-//     if(!(ftest=TFile::Open(TString("/scratch3/alien/new-colli/")+vgl+TString(".dif.")+Seed+TString(".root")))){cout<<"no "<<vgl+TString(".dif.")+Seed<<endl; ftest->Close();delete ftest;continue;}
+//     if(!(ftest=TFile::Open(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".dif.")+Seed+TString(".root")))){cout<<"no "<<vgl+TString(".dif.")+Seed<<endl; ftest->Close();delete ftest;continue;}
 //     ftest->Close();delete ftest;
-//     if(!(ftest=TFile::Open(TString("/scratch3/alien/new-colli/")+vgl+TString(".sum.")+Seed+TString(".root")))){cout<<"no "<<vgl+TString(".dif.")+Seed<<endl; ftest->Close();delete ftest;continue;}
+//     if(!(ftest=TFile::Open(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".sum.")+Seed+TString(".root")))){cout<<"no "<<vgl+TString(".dif.")+Seed<<endl; ftest->Close();delete ftest;continue;}
 //     ftest->Close();delete ftest;
-//     if(!(ftest=TFile::Open(TString("/scratch3/alien/new-colli/")+vgl+TString(".amo.")+Seed+TString(".root")))){cout<<"no "<<vgl+TString(".dif.")+Seed<<endl; ftest->Close();delete ftest;continue;}
+//     if(!(ftest=TFile::Open(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".amo.")+Seed+TString(".root")))){cout<<"no "<<vgl+TString(".dif.")+Seed<<endl; ftest->Close();delete ftest;continue;}
 //     ftest->Close();delete ftest;
-//     if(!(ftest=TFile::Open(TString("/scratch3/alien/new-colli/")+vgl+TString(".inc.")+Seed+TString(".root")))){cout<<"no "<<vgl+TString(".dif.")+Seed<<endl; ftest->Close();delete ftest;continue;}
+//     if(!(ftest=TFile::Open(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".inc.")+Seed+TString(".root")))){cout<<"no "<<vgl+TString(".dif.")+Seed<<endl; ftest->Close();delete ftest;continue;}
 //     ftest->Close();delete ftest;
-    tdif->Add(TString("/scratch3/alien/new-colli/")+vgl+TString(".dif.")+Seed+TString(".root"));
-    tsum->Add(TString("/scratch3/alien/new-colli/")+vgl+TString(".sum.")+Seed+TString(".root"));
-    tamo->Add(TString("/scratch3/alien/new-colli/")+vgl+TString(".amo.")+Seed+TString(".root"));
-    tinc->Add(TString("/scratch3/alien/new-colli/")+vgl+TString(".inc.")+Seed+TString(".root"));
-    // cout<<"ADDED "<<TString("/w/work3/mainz/A2/BeamProfiler/MCB/Settings2/")+vgl+TString(".dif.")+Seed+TString(".root")<<endl;
+
+    tdif->Add(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".dif")+TString(".root"));
+    tsum->Add(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".sum")+TString(".root"));
+    tamo->Add(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".amo")+TString(".root"));
+    tinc->Add(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".inc")+TString(".root"));
+
+
+    cout<<"ADDED "<<TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".dif")+TString(".root")<<endl;
     //Add the TUserMCBOut
     TFile *fi;
     TTree *tr;
     TUserMCBOut* InfoOut;
-    //    fi=new TFile(TString("/w/work3/mainz/A2/BeamProfiler/MCB/Settings2/")+vgl+TString(".dif.")+Seed+TString(".root"));
-    fi=new TFile(TString("/scratch3/alien/new-colli/")+vgl+TString(".dif.")+Seed+TString(".root"));
+    //    fi=new TFile(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".dif.")+Seed+TString(".root"));
+    fi=new TFile(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".dif")+TString(".root"));
     tr=(TTree*)fi->Get("mcb_tree");
     TList* treelist=tr->GetUserInfo();
-    TUserMCBOut *InfoOut=(TUserMCBOut*)treelist->At(1);
-    cout<<"InfoOut "<<InfoOut->bremsprocs<<" "<<InfoOut->IntensityMin<<endl;
-    if(i==0)InfoOut_dif=new TUserMCBOut((TUserMCBOut*)treelist->At(1));
-    else InfoOut_dif->Add((TUserMCBOut*)treelist->At(1));
+    InfoOut=(TUserMCBOut*)treelist->At(1);
+//    cout<<"InfoOut "<<InfoOut->bremsprocs<<" "<<InfoOut->IntensityMin<<endl;
+    if(i==0)InfoOut_dif=new TUserMCBOut(*(TUserMCBOut*)treelist->At(1));
+    cout<<"InfoOut_dif "<<InfoOut_dif->bremsprocs<<" "<<InfoOut_dif->IntensityMin<<endl;
+//    else InfoOut_dif->Add(*(TUserMCBOut*)treelist->At(1));
     fi->Close();
 
-    //    fi=new TFile(TString("/w/work3/mainz/A2/BeamProfiler/MCB/Settings2/")+vgl+TString(".sum.")+Seed+TString(".root"));
-    fi=new TFile(TString("/scratch3/alien/new-colli/")+vgl+TString(".sum.")+Seed+TString(".root"));
+    //    fi=new TFile(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".sum.")+Seed+TString(".root"));
+    fi=new TFile(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".sum")+TString(".root"));
     tr=(TTree*)fi->Get("mcb_tree");
     treelist=tr->GetUserInfo();
-    if(i==0)InfoOut_sum=new TUserMCBOut((TUserMCBOut*)treelist->At(1));
-    else InfoOut_sum->Add((TUserMCBOut*)treelist->At(1));
+    if(i==0)InfoOut_sum=new TUserMCBOut(*(TUserMCBOut*)treelist->At(1));
+    cout<<"InfoOut_sum "<<InfoOut_sum->bremsprocs<<" "<<InfoOut_sum->IntensityMin<<endl;
+//    else InfoOut_sum->Add(*(TUserMCBOut*)treelist->At(1));
     fi->Close();
 
-    //    fi=new TFile(TString("/w/work3/mainz/A2/BeamProfiler/MCB/Settings2/")+vgl+TString(".amo.")+Seed+TString(".root"));
-    fi=new TFile(TString("/scratch3/alien/new-colli/")+vgl+TString(".amo.")+Seed+TString(".root"));
+    //    fi=new TFile(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".amo.")+Seed+TString(".root"));
+    fi=new TFile(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".amo")+TString(".root"));
     tr=(TTree*)fi->Get("mcb_tree");
     treelist=tr->GetUserInfo();
-    if(i==0)InfoOut_amo=new TUserMCBOut((TUserMCBOut*)treelist->At(1));
-    else InfoOut_amo->Add((TUserMCBOut*)treelist->At(1));
+    if(i==0)InfoOut_amo=new TUserMCBOut(*(TUserMCBOut*)treelist->At(1));
+    cout<<"InfoOut_amo "<<InfoOut_amo->bremsprocs<<" "<<InfoOut_amo->IntensityMin<<endl;
+//    else InfoOut_amo->Add(*(TUserMCBOut*)treelist->At(1));
     fi->Close();
 
-    //    fi=new TFile(TString("/w/work3/mainz/A2/BeamProfiler/MCB/Settings2/")+vgl+TString(".inc.")+Seed+TString(".root"));
-   fi=new TFile(TString("/scratch3/alien/new-colli/")+vgl+TString(".inc.")+Seed+TString(".root"));
+    //    fi=new TFile(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".inc.")+Seed+TString(".root"));
+    fi=new TFile(TString("/home/hovanes/GlueX/MCB/")+vgl+TString(".inc")+TString(".root"));
     tr=(TTree*)fi->Get("mcb_tree");
     treelist=tr->GetUserInfo();
-    if(i==0)InfoOut_inc=new TUserMCBOut((TUserMCBOut*)treelist->At(1));
-    else InfoOut_inc->Add((TUserMCBOut*)treelist->At(1));
+    if(i==0)InfoOut_inc=new TUserMCBOut(*(TUserMCBOut*)treelist->At(1));
+    cout<<"InfoOut_inc "<<InfoOut_inc->bremsprocs<<" "<<InfoOut_inc->IntensityMin<<endl;
+//    else InfoOut_inc->Add(*(TUserMCBOut*)treelist->At(1));
     fi->Close();
   }
   tdif->SetNameTitle("tdif","tdif");
@@ -173,15 +194,11 @@ void ChainFiles(Int_t NFiles,TString seeds[],TString vgl){
   Weight_amo=InfoOut_amo->NormVolume *  renorm/InfoOut_amo->no_Electrons;
   Weight_inc=InfoOut_inc->NormVolume *  renorm/InfoOut_inc->no_Electrons;
 
- 
 
 }
 void AddFileToChain(){
-
-
-
-
 }
+
 void DisplayInfoIn(TTree* tree){
   TUserMCBInp* InfoIn;
   TList* treelist=tree->GetUserInfo();
@@ -241,7 +258,8 @@ TH1F* ConstructParaPerp1D(TString hisname,TString var,TCut Cut,Int_t Nbins,Doubl
   hamo1D=Draw1DHist(tamo,hisname,var,Cut,Nbins,Min,Max);
   cout<<"Weight diff "<<Weight_dif<<" sum "<<Weight_sum<<" amo "<<Weight_amo<<" inc "<<Weight_inc<<endl;
   hsum1D->Scale(Weight_sum);
-  hdif1D->Scale(-Weight_dif);
+  //hdif1D->Scale(-Weight_dif);
+  hdif1D->Scale(Weight_dif);
   hamo1D->Scale(Weight_amo);
   hinc1D->Scale(Weight_inc);
   
@@ -319,7 +337,7 @@ TH2F* Draw2DHist(TTree *t,TString hisname,TString var,TCut Cut,Int_t NbinsX,Doub
 
   return hCrystR2D;
 }
-void AmorphousFit(TH1F* his){
+TF1* AmorphousFit(TH1F* his){
   TF1* amob=new TF1("amob","((1+(1-x/855)*(1-x/855))*13.79-0.6666667*(1-x/855)*13.12)*[0]",1,800);
   his->Fit("amob");
   return amob;
